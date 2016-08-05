@@ -148,3 +148,70 @@ por
 
 Ahora refresca tu navegador para ver los cambios.
 
+
+## 4. Añadiendo navegación
+
+La aplicación no se ve muy bien aún. Usaremos el proyecto [Bootstrap](http://getbootstrap.com/getting-started/) para darle un mejor estilo.
+
+Abre `app/views/layouts/application.html.erb` en tu editor de código y encima de la linea:
+
+ ```sh
+ <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+ ```
+
+Incluye las siguientes lineas:
+
+```sh
+<link rel="stylesheet" href="http://railsgirls.com/assets/bootstrap.css">
+<link rel="stylesheet" href="http://railsgirls.com/assets/bootstrap-theme.css">
+```
+
+y reemplaza esta linea
+```
+<%= yield %>
+```
+por
+
+```sh
+<div class="container">
+  <%= yield %>
+</div>
+```
+
+También agregaremos una barra de navegación y un pie de página, para esto pega el siguiente código debajo la etiqueta `<body>`
+
+```
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"> Rails Girls BAQ</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><%= link_to "Posts", posts_path %></li>
+            <li><%= link_to "New Post", new_post_path %></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+```
+
+y este otro bloque encima de la etiquta `</body>`
+
+```
+  <footer>
+    <div class="container">
+      <p>Rails Girls Barranquilla 2016</p>
+    </div>
+  </footer>
+  <script src="//railsgirls.com/assets/bootstrap.js"></script>
+```
+
+Mira la nueva barra de navegación en [http://localhost:3000/posts](http://localhost:3000/posts)
+
