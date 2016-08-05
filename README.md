@@ -215,3 +215,95 @@ y este otro bloque encima de la etiquta `</body>`
 
 Mira la nueva barra de navegación en [http://localhost:3000/posts](http://localhost:3000/posts)
 
+
+## 5. Agregando comentarios
+
+Seamos más sociales permitiendo que se puedan añadir comentarios sobre nuestros _posts_, para esto presionamos `Ctrl` + `C` para detener el servidor y ejecutamos el siguiente comando en la terminal:
+
+```sh
+rails g model comments content:text post:references
+```
+
+Se generaran unos archivos, uno de los más importatntes es la migración, pues contiene la definición de la tabla donde se guardaran los comentarios.
+
+Ejecutamos la migración para crear la tabla en la base de datos con el comando:  
+
+```sh
+rake db:migrate
+```
+
+ Iniciamos nuevamente el servidor con:
+```sh
+rails server
+```
+
+Creemos la relación entre _post_ y _comments_. Abrimos el archivo `app/models/post.rb` y debajo de la línea
+
+```
+  mount_uploader :picture, PictureUploader
+```
+
+agregamos
+
+```
+ has_many :comments, :dependent => :destroy
+ accepts_nested_attributes_for :comments,  :reject_if => lambda { |a| a[:content].blank? }, :allow_destroy => true
+```
+
+Ahora necesitamos una formulario para escribir los comentarios, entonces abrimos `app/views/posts/show.html.erb` y encima de la linea
+
+```
+<%= link_to 'Edit', edit_post_path(@post) %> |
+```
+
+agrega
+
+```
+<%= form_for(@post) do |f| %>
+  <%= f.fields_for :comments, @post.comments.build do |builder| %>
+    <div class="field">
+      <%= builder.label :content, 'Write a comment' %>
+      <%= builder.text_area :content %>
+    </div>
+  <% end %>
+
+  <div class="actions">
+   <%= f.submit 'comment' %>
+  </div>
+<% end %>
+```
+
+Luego abre el archivo `app/controllers/posts_controller.rb` y dentro del método `post_params` cambia la linea
+```
+params.require(:post).permit(:caption, :picture)
+```
+
+por 
+
+```
+params.require(:post).permit(:caption, :picture, comments_attributes: [ :content,  :_destroy, :id ] )
+```
+
+Entra a [http://localhost:3000/posts](http://localhost:3000/posts) y abre un _post_ creado anteriorment y agrega un comentario.
+
+Nótaras que no se pueden ver los comentario agregados, para poder visualizarlos entra al archivo `app/views/posts/show.html.erb` y encima de la linea
+
+```
+<%= form_for(@post) do |f| %>
+```
+
+agrega
+```
+<p>
+  <strong>Comments</strong>
+  <br>
+  <% @post.comments.each do |comment| %>
+    <span class="text-muted"><%= comment.created_at.to_formatted_s(:short)  %></span> | <%= comment.content %>
+    <br>
+  <% end %>
+</p>
+```
+
+Ahora refresca tu navegador para ver los comentarios.
+
+

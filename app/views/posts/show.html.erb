@@ -10,5 +10,27 @@
   <%= image_tag(@post.picture_url, :width => 400) if @post.picture.present? %>
 </p>
 
+<p>
+  <strong>Comments</strong>
+  <br>
+  <% @post.comments.each do |comment| %>
+    <span class="text-muted"><%= comment.created_at.to_formatted_s(:short)  %></span> | <%= comment.content %>
+    <br>
+  <% end %>
+</p>
+
+<%= form_for(@post) do |f| %>
+  <%= f.fields_for :comments, @post.comments.build do |builder| %>
+    <div class="field">
+      <%= builder.label :content, 'Write a comment' %>
+      <%= builder.text_area :content %>
+    </div>
+  <% end %>
+
+  <div class="actions">
+   <%= f.submit 'comment' %>
+  </div>
+<% end %>
+
 <%= link_to 'Edit', edit_post_path(@post) %> |
 <%= link_to 'Back', posts_path %>
