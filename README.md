@@ -83,3 +83,68 @@ rails server
 ```
 Prueba lo que se ha generado hasta el momento ingresando a [http://localhost:3000/posts](http://localhost:3000/posts) en tu navegador.
 Crea,  edita y mira la información de los _posts_.
+
+
+## 3. Guardando imagenes
+
+Para subir imagenes a nuestro servidor necesitamos instalar una pieza de software, llamada `gema` en Rails.
+Usando tu editor texto abre el archivo `Gemfile` que se encuentra en la raíz del directorio  y debajo de la linea
+
+```
+gem 'sqlite3'
+```
+Agrega
+
+```
+# Use Carrierwave to upload images on the server
+gem 'carrierwave'
+```
+En la terminal ejecuta:
+
+```sh
+bundle
+```
+
+Ahora podemos generar el código para el manejar la subida de imagenes, para eso en la terminal ejecuta:
+
+```sh
+rails generate uploader Picture
+```
+
+Si el servidor está corriendo. Presione `Ctrl` + `C` para cerrarlo y luego ejecuta `rails server` para iniciarlo.
+Es necesario reiniciar el proceso del servidor Rails para que la aplicación pueda cargar el código generado por la librería recién agregada.
+
+Para usar el codigo generado previamente abrimos el archivo `app/models/post.rb` y debajo de la línea
+
+```
+class Post < ApplicationRecord
+```
+agregamos
+
+```
+  mount_uploader :picture, PictureUploader
+```
+
+Luego abre `app/views/posts/_form.html.erb` y cambia
+```
+<%= f.text_field :picture %>
+```
+
+por
+```
+<%= f.file_field :picture %>
+````
+
+Ingresa a [http://localhost:3000/posts](http://localhost:3000/posts) en tu navegador y agrega un nuevo _post_ con una imagen. Notaras cuando cargas una imagen que esta no se ve, esto es porque te muestra sólo la ruta del archivo, para arreglar eso abre el archivo `app/views/post/show.html.erb` y cambia
+
+```
+<%= @post.picture %>
+```
+por
+
+```sh
+<%= image_tag(@post.picture_url, :width => 400) if @post.picture.present? %>
+````
+
+Ahora refresca tu navegador para ver los cambios.
+
