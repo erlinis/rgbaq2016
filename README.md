@@ -307,3 +307,32 @@ agrega
 Ahora refresca tu navegador para ver los comentarios.
 
 
+## 6. Mejorando el diseño
+
+Demosle un poco de estilo a la aplicación usando algunos de los componentes de bootstrap.
+
+Abre el archivo `app/views/posts/index.html.erb` y cambia su contenido por
+
+```
+<p id="notice"><%= notice %></p>
+<% @posts.reverse.each do |post| %>
+  <div class="row">
+    <div class="col-md-8 col-sm-4">
+      <div class="thumbnail">
+        <%= image_tag(post.picture_url, :width => 200) if post.picture.present? %>
+        <div class="caption">
+          <h4><%= link_to post.caption, post %></h4>
+          <p>
+            <%= post.created_at.to_formatted_s(:short) %> |
+            <%= link_to "Comentarios #{post.comments.count}", post %> |
+            <%= link_to 'Destroy', post, method: :delete, data: { confirm: 'Are you sure?' } %> 
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+```
+
+Mira el nueva aspecto de la aplicación en [http://localhost:3000/posts](http://localhost:3000/posts)
