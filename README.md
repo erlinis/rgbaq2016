@@ -259,18 +259,11 @@ Ahora necesitamos una formulario para escribir los comentarios, entonces abrimos
 agrega
 
 ```
-<%= form_for(@post) do |f| %>
-  <%= f.fields_for :comments, @post.comments.build do |builder| %>
-    <div class="field">
-      <%= builder.label :content, 'Write a comment' %>
-      <%= builder.text_area :content %>
-    </div>
-  <% end %>
-
-  <div class="actions">
-   <%= f.submit 'comment' %>
-  </div>
-<% end %>
+ <%= form_for([@post, @post.comments.build]) do |f| %>
+         <%= f.label :content %>
+         <%= f.text_area :content %>
+         <%= f.submit 'comment' %>
+      <% end %>
 ```
 
 Luego abre el archivo `app/controllers/posts_controller.rb` y dentro del método `post_params` cambia la linea
