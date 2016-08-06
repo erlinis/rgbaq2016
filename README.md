@@ -266,16 +266,33 @@ agrega
       <% end %>
 ```
 
-Luego abre el archivo `app/controllers/posts_controller.rb` y dentro del método `post_params` cambia la linea
+Luego abre el archivo `app/controllers/comment_controller.rb` y pega
 ```
-params.require(:post).permit(:caption, :picture)
+class CommentsController < ApplicationController
+  def create
+    @post = Post.find(params[:post_id])
+    @comment = @post.comments.new(comment_params)
+    @comment.user = current_user
+    @comment.save
+    redirect_to post_path(@post)
+  end
+
+  private
+    def comment_params
+      params.require(:comment).permit(:content)
+    end
+end
 ```
 
-por 
+en el archivo `config/routes` copia y pega
+```sh
+  root 'posts#index'
+  resources :posts do
+   resources :comments
+  end
+  
+  ```
 
-```
-params.require(:post).permit(:caption, :picture, comments_attributes: [ :content,  :_destroy, :id ] )
-```
 
 Entra a [http://localhost:3000/posts](http://localhost:3000/posts) y abre un _post_ creado anteriorment y agrega un comentario.
 
